@@ -1,9 +1,9 @@
-import { InteractiveBook } from "@/components/interactive-book"
+import { BicaraApp } from "@/components/bicara-app"
 
 export default function Home() {
   return (
     <main className="min-h-dvh">
-      <InteractiveBook />
+      <BicaraApp />
     </main>
   )
 }

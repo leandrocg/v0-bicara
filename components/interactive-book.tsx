@@ -1,55 +1,16 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
-import { motion, AnimatePresence, useAnimation, PanInfo } from "framer-motion"
+import { useState, useEffect, useCallback } from "react"
+import { motion, AnimatePresence, PanInfo } from "framer-motion"
 import { BookPage } from "./book-page"
 import { ProgressDots } from "./progress-dots"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, ArrowLeft, BookOpen } from "lucide-react"
+import type { Book } from "@/lib/books-data"
 
-const bookContent = [
-  {
-    id: 1,
-    indonesian: "Mengapa Langit Biru?",
-    english: "Why is the sky blue?",
-    isVocabPage: false,
-  },
-  {
-    id: 2,
-    indonesian: "Langit terlihat biru.",
-    english: "The sky appears blue.",
-    isVocabPage: false,
-  },
-  {
-    id: 3,
-    indonesian: "Matahari mengirim cahaya ke Bumi.",
-    english: "The sun sends light to Earth.",
-    isVocabPage: false,
-  },
-  {
-    id: 4,
-    indonesian: "Cahaya melewati udara.",
-    english: "Light passes through the air.",
-    isVocabPage: false,
-  },
-  {
-    id: 5,
-    indonesian: "Udara menyebarkan cahaya biru lebih banyak.",
-    english: "The air scatters more blue light.",
-    isVocabPage: false,
-  },
-  {
-    id: 6,
-    indonesian: "Kosakata (Vocabulary)",
-    english: "",
-    isVocabPage: true,
-    vocabulary: [
-      { id: "langit", en: "sky" },
-      { id: "cahaya", en: "light" },
-      { id: "udara", en: "air" },
-      { id: "menyebarkan", en: "scatter" },
-    ],
-  },
-]
+interface InteractiveBookProps {
+  book: Book
+  onBack: () => void
+}
 
 const swipeConfidenceThreshold = 10000
 const swipePower = (offset: number, velocity: number) => {
@@ -71,17 +32,15 @@ const variants = {
   }),
 }
 
-export function InteractiveBook() {
+export function InteractiveBook({ book, onBack }: InteractiveBookProps) {
   const [[currentPage, direction], setPage] = useState([0, 0])
-  const containerRef = useRef<HTMLDivElement>(null)
-  const controls = useAnimation()
 
   const paginate = useCallback((newDirection: number) => {
     const nextPage = currentPage + newDirection
-    if (nextPage >= 0 && nextPage < bookContent.length) {
+    if (nextPage >= 0 && nextPage < book.pages.length) {
       setPage([nextPage, newDirection])
     }
-  }, [currentPage])
+  }, [currentPage, book.pages.length])
 
   const goToPage = (index: number) => {
     const newDirection = index > currentPage ? 1 : -1
@@ -108,40 +67,62 @@ export function InteractiveBook() {
         paginate(1)
       } else if (e.key === "ArrowLeft") {
         paginate(-1)
+      } else if (e.key === "Escape") {
+        onBack()
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [paginate])
+  }, [paginate, onBack])
 
-  const page = bookContent[currentPage]
+  // Reset page when book changes
+  useEffect(() => {
+    setPage([0, 0])
+  }, [book.id])
+
+  const page = book.pages[currentPage]
 
   return (
-    <div className="h-dvh w-full flex flex-col bg-background overflow-hidden">
+    <motion.div 
+      className="h-dvh w-full flex flex-col bg-background overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       {/* Book header */}
-      <header className="flex items-center justify-between px-4 py-3 bg-card border-b border-border">
+      <header className="flex items-center justify-between px-3 py-2 bg-card border-b border-border">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground text-sm font-bold">📚</span>
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent text-muted-foreground hover:text-foreground"
+            aria-label="Back to library"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-xs font-medium hidden sm:inline">Perpustakaan</span>
+          </button>
+        </div>
+        
+        <div className="flex items-center gap-2 flex-1 justify-center">
+          <div className="w-6 h-6 rounded-lg bg-primary flex items-center justify-center">
+            <BookOpen className="w-3 h-3 text-primary-foreground" />
           </div>
-          <h1 className="font-bold text-foreground text-sm md:text-base">
-            Mengapa Langit Biru?
+          <h1 className="font-bold text-foreground text-sm md:text-base truncate max-w-[180px] sm:max-w-none">
+            {book.title}
           </h1>
         </div>
-        <span className="text-sm font-semibold text-muted-foreground">
-          {currentPage + 1} / {bookContent.length}
+
+        <span className="text-xs font-semibold text-muted-foreground min-w-[50px] text-right">
+          {currentPage + 1} / {book.pages.length}
         </span>
       </header>
 
       {/* Book content area with swipe */}
-      <div 
-        ref={containerRef}
-        className="flex-1 relative overflow-hidden"
-      >
+      <div className="flex-1 relative overflow-hidden">
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.div
-            key={currentPage}
+            key={`${book.id}-${currentPage}`}
             custom={direction}
             variants={variants}
             initial="enter"
@@ -170,34 +151,66 @@ export function InteractiveBook() {
         <button
           onClick={() => paginate(-1)}
           disabled={currentPage === 0}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-card/80 backdrop-blur-sm shadow-lg flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-card transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent hidden md:flex"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-card/80 backdrop-blur-sm shadow-lg items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-card transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent hidden md:flex"
           aria-label="Previous page"
         >
           <ChevronLeft className="w-5 h-5 text-foreground" />
         </button>
         <button
           onClick={() => paginate(1)}
-          disabled={currentPage === bookContent.length - 1}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-card/80 backdrop-blur-sm shadow-lg flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-card transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent hidden md:flex"
+          disabled={currentPage === book.pages.length - 1}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-card/80 backdrop-blur-sm shadow-lg items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:bg-card transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent hidden md:flex"
           aria-label="Next page"
         >
           <ChevronRight className="w-5 h-5 text-foreground" />
         </button>
       </div>
 
-      {/* Progress indicator */}
+      {/* Bottom navigation */}
       <div className="bg-card border-t border-border">
-        <ProgressDots
-          total={bookContent.length}
-          current={currentPage}
-          onDotClick={goToPage}
-        />
+        {/* Mobile navigation buttons */}
+        <div className="flex items-center justify-between px-4 py-2 md:hidden">
+          <button
+            onClick={() => paginate(-1)}
+            disabled={currentPage === 0}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-muted disabled:opacity-30 disabled:cursor-not-allowed text-sm font-medium text-foreground"
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Prev
+          </button>
+          
+          <ProgressDots
+            total={book.pages.length}
+            current={currentPage}
+            onDotClick={goToPage}
+          />
+
+          <button
+            onClick={() => paginate(1)}
+            disabled={currentPage === book.pages.length - 1}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-muted disabled:opacity-30 disabled:cursor-not-allowed text-sm font-medium text-foreground"
+            aria-label="Next page"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Desktop progress indicator */}
+        <div className="hidden md:block">
+          <ProgressDots
+            total={book.pages.length}
+            current={currentPage}
+            onDotClick={goToPage}
+          />
+        </div>
         
         {/* Swipe hint for mobile */}
-        <p className="text-center text-xs text-muted-foreground pb-3 md:hidden">
-          Swipe left or right to navigate
+        <p className="text-center text-xs text-muted-foreground pb-2 md:pb-3 md:hidden">
+          Swipe or use buttons to navigate
         </p>
       </div>
-    </div>
+    </motion.div>
   )
 }

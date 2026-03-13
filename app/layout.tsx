@@ -16,8 +16,8 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: 'Mengapa Langit Biru? - Interactive Book',
-  description: 'An interactive children\'s book for learning Indonesian',
+  title: 'Bicara - Learn Indonesian Through Stories',
+  description: 'An interactive children\'s platform for learning Indonesian, one story at a time',
   generator: 'v0.app',
   icons: {
     icon: [
