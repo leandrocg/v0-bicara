@@ -16,8 +16,8 @@ export interface Book {
 export const BOOKS: Book[] = [
   {
     id: "mengapa-langit-biru",
-    title: "Mengapa Langit Biru?",
-    description: "Pelajari mengapa langit berwarna biru!",
+    title: "Why is the Sky Blue?",
+    description: "Learn why the sky is blue!",
     coverColor: "from-sky-400 to-blue-600",
     pages: [
       { indonesian: "Mengapa Langit Biru?", english: "Why is the sky blue?", isVocabPage: false },
@@ -40,8 +40,8 @@ export const BOOKS: Book[] = [
   },
   {
     id: "makan-pagi",
-    title: "Makan Pagi",
-    description: "Cerita tentang sarapan yang lezat!",
+    title: "Breakfast",
+    description: "A story about a delicious breakfast!",
     coverColor: "from-amber-400 to-orange-500",
     pages: [
       { indonesian: "Makan Pagi", english: "Breakfast", isVocabPage: false },
@@ -64,8 +64,8 @@ export const BOOKS: Book[] = [
   },
   {
     id: "warna-warni",
-    title: "Warna-Warni",
-    description: "Belajar tentang warna-warna indah!",
+    title: "Colorful",
+    description: "Learn about beautiful colors!",
     coverColor: "from-pink-400 to-rose-500",
     pages: [
       { indonesian: "Warna-Warni", english: "Colorful", isVocabPage: false },
@@ -88,8 +88,8 @@ export const BOOKS: Book[] = [
   },
   {
     id: "keluarga-saya",
-    title: "Keluarga Saya",
-    description: "Cerita tentang keluarga tercinta!",
+    title: "My Family",
+    description: "A story about my beloved family!",
     coverColor: "from-emerald-400 to-teal-500",
     pages: [
       { indonesian: "Keluarga Saya", english: "My Family", isVocabPage: false },
@@ -112,8 +112,8 @@ export const BOOKS: Book[] = [
   },
   {
     id: "di-taman",
-    title: "Di Taman",
-    description: "Petualangan seru di taman bermain!",
+    title: "At the Park",
+    description: "A fun adventure at the playground!",
     coverColor: "from-violet-400 to-purple-500",
     pages: [
       { indonesian: "Di Taman", english: "At the Park", isVocabPage: false },

@@ -39,10 +39,10 @@ function BookCard({ book, index, onSelect }: { book: Book; index: number; onSele
         </p>
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">
-            {book.pages.length} halaman
+            {book.pages.length} pages
           </span>
           <span className="text-sm font-semibold text-accent group-hover:underline">
-            Baca Sekarang
+            Read Now
           </span>
         </div>
       </div>
@@ -88,17 +88,9 @@ export function HomeScreen({ onSelectBook }: HomeScreenProps) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Belajar Bahasa Indonesia,
+            Learn Indonesian,
             <br />
-            <span className="text-accent-foreground/90">Satu Cerita Sekali Waktu</span>
-          </motion.p>
-          <motion.p
-            className="relative z-10 text-sm text-primary-foreground/80 mt-2 italic"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            Learn Indonesian, one story at a time
+            <span className="text-accent-foreground/90">One Story at a Time</span>
           </motion.p>
         </div>
       </motion.section>
@@ -111,8 +103,7 @@ export function HomeScreen({ onSelectBook }: HomeScreenProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          Perpustakaan
-          <span className="text-muted-foreground font-normal ml-2 text-sm">(Library)</span>
+          Library
         </motion.h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
