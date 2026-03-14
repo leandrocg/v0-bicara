@@ -10,6 +10,7 @@
     - P5: Mobile-First UX
     - P6: Accessibility Matters
     - P7: Conventional Commits
+    - P8: Seed Data for E2E Testing
   Templates requiring updates:
     - .specledger/templates/plan-template.md — ⚠ Constitution Check
       section uses generic placeholders; will align on first
@@ -24,7 +25,7 @@
 # Project Constitution: Bicara
 
 **Project**: Bicara — Indonesian language learning app
-**Constitution Version**: 1.0.0
+**Constitution Version**: 1.1.0
 **Ratification Date**: 2026-03-14
 **Last Amended**: 2026-03-14
 
@@ -178,6 +179,25 @@ All commits MUST follow the Conventional Commits format.
 
 **Rationale**: Consistent commit messages enable automated
 changelogs, clearer git history, and easier bisecting.
+
+---
+
+### P8: Seed Data for E2E Testing
+
+Every feature that introduces or modifies a data model MUST include
+seed data that bootstraps environments for end-to-end testing.
+
+**Rules**:
+- Database migrations MUST include seed data scripts that populate
+  the schema with representative test data.
+- Seed data MUST be sufficient to exercise all user stories in the
+  feature spec without manual data entry.
+- Seed data scripts MUST be idempotent (safe to run multiple times).
+- E2E tests MUST NOT depend on production data — only on seed data.
+
+**Rationale**: Reproducible test environments catch regressions early
+and eliminate "works on my machine" issues. Seed data ensures every
+developer and CI pipeline starts from a known state.
 
 ---
 

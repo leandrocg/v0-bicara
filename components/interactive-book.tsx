@@ -5,7 +5,7 @@ import { motion, AnimatePresence, PanInfo } from "framer-motion"
 import { BookPage } from "./book-page"
 import { ProgressDots } from "./progress-dots"
 import { ChevronLeft, ChevronRight, ArrowLeft, BookOpen } from "lucide-react"
-import type { Book } from "@/lib/books-data"
+import type { Book } from "@/lib/types"
 
 interface InteractiveBookProps {
   book: Book
