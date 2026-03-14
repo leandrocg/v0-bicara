@@ -1,0 +1,22 @@
+version: 1.0.0
+project:
+    id: fb317860-ecbe-4caf-821a-f3d057ad202b
+    name: v0-bicara
+    short_code: bi
+    created: 2026-03-14T10:14:13.137657+08:00
+    modified: 2026-03-14T10:14:14.67774+08:00
+    version: 0.1.0
+playbook:
+    name: specledger
+    version: 1.0.0
+    applied_at: 2026-03-14T10:14:13.137657+08:00
+    structure:
+        - .specledger/
+        - .gitattributes
+        - AGENTS.md
+        - mise.toml
+template_version: 1.0.47
+task_tracker:
+    choice: builtin
+    enabled_at: 2026-03-14T10:14:13.137657+08:00
+artifact_path: specledger/
