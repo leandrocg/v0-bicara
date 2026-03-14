@@ -25,28 +25,35 @@ No test framework is configured.
 `app/page.tsx` → `BicaraApp` → `HomeScreen` (book grid) | `InteractiveBook` (reader)
 
 - **`BicaraApp`** — top-level state machine toggling between library and reader views using `AnimatePresence`
-- **`HomeScreen`** — displays book cards from `BOOKS` array; purely presentational
+- **`HomeScreen`** — displays book cards; receives `books` array as prop
 - **`InteractiveBook`** — swipe/keyboard page navigation with `framer-motion` drag gestures
 - **`BookPage`** — split-screen layout: Indonesian text on top, English translation on bottom with blur-reveal interaction. Vocabulary pages render as card grids instead.
 - **`ProgressDots`** — page position indicator
 
 ### Data model
 
-All book content lives in `lib/books-data.ts` as a static `BOOKS` array. Each `Book` has an `id`, metadata, and `pages[]` where each `BookPage` has `indonesian`/`english` text and an optional `vocabulary` list for vocab pages.
+Book content is stored in **Supabase (Postgres)** across two tables: `books` and `pages` (with a FK from `pages.book_id` → `books.id`). Schema is in `supabase/migrations/`, seed data in `supabase/seed.sql`.
+
+- **`BicaraApp`** fetches books + pages in a single joined query on mount via the Supabase JS client (`lib/supabase.ts`)
+- DB columns use `snake_case`; the fetch maps them to `camelCase` app interfaces defined in `lib/types.ts`
+- Generated DB types live in `lib/database.types.ts` (generated via Supabase CLI / MCP)
+- RLS policies allow public read access; no write access via anon key
+- `validateBooks()` in `bicara-app.tsx` filters out books with missing/invalid pages before rendering
 
 ## Tech Stack
 
-- **Next.js 16** with App Router (but no server-side data fetching or API routes)
+- **Next.js 16** with App Router (client-side data fetching via Supabase; no API routes)
 - **pnpm** package manager
 - **Tailwind CSS v4** with `tw-animate-css`
 - **shadcn/ui** (new-york style, RSC mode) — components in `components/ui/`
 - **framer-motion** for animations and gesture handling
+- **@supabase/supabase-js** for database queries
 - **lucide-react** for icons
 - **Fonts**: Nunito + Quicksand (Google Fonts via `next/font`)
 
 ## External Services
 
-- **Supabase MCP** configured in `.mcp.json` (project ref: `jmszvzpoxbrchlibagyj`)
+- **Supabase** — Postgres database backend (project ref: `jmszvzpoxbrchlibagyj`). MCP configured in `.mcp.json`. Requires `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` env vars (see `.env.example`)
 - **Vercel Analytics** included in layout
 - **SpecLedger** tooling for spec-driven development (`specledger/` directory, `.specledger/` config)
 
