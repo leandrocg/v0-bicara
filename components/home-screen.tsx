@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion"
 import { BookOpen, Sparkles } from "lucide-react"
-import { BOOKS, type Book } from "@/lib/books-data"
+import type { Book } from "@/lib/types"
 
 interface HomeScreenProps {
+  books: Book[]
   onSelectBook: (bookId: string) => void
 }
 
@@ -50,7 +51,7 @@ function BookCard({ book, index, onSelect }: { book: Book; index: number; onSele
   )
 }
 
-export function HomeScreen({ onSelectBook }: HomeScreenProps) {
+export function HomeScreen({ books, onSelectBook }: HomeScreenProps) {
   return (
     <div className="min-h-dvh bg-background">
       {/* Header */}
@@ -107,7 +108,7 @@ export function HomeScreen({ onSelectBook }: HomeScreenProps) {
         </motion.h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {BOOKS.map((book, index) => (
+          {books.map((book, index) => (
             <BookCard 
               key={book.id} 
               book={book} 
